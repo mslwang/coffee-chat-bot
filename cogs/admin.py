@@ -1,10 +1,9 @@
 import discord
 from discord.ext import commands
-import cogs.category_emojis as emojis
-import bot
 
 CHANNEL_NAME = 'coffee-time'
 
+category_emoji = {}
 
 class Admin(commands.Cog):
     def __init__(self, bot):
@@ -27,7 +26,10 @@ class Admin(commands.Cog):
 
         if len(args) > 0:
             for arg in args:
-                response += emojis.category_emojis[arg] + ": " + arg + "\n"
+                if category_emoji[arg] is not None:
+                    response += category_emoji[arg] + ": " + arg + "\n"
+                else:
+                    response += "\u25FB: " + arg + "\n"
         else:
             response += "No categories entered"
 
@@ -37,6 +39,14 @@ class Admin(commands.Cog):
     async def categories_error(self, error, ctx):
         if isinstance(error, commands.CheckFailure):
             await ctx.channel.send("You do not have permission to have ~coffee~")
+
+    @commands.command(name='emojis', aliases=['emoji'])
+    async def emoji(self, ctx, *args):
+        name = args[0]
+        emoji = args[1]
+        category_emoji[name] = emoji
+
+        await ctx.channel.send("Emoji for " + name + " is set as " + emoji)
 
     # @categories.Cog.listener()
     # async def on_reaction_add(self, reaction, user):
