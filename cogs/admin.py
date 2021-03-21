@@ -41,6 +41,8 @@ class Admin(commands.Cog):
             await ctx.channel.send("You do not have permission to have ~coffee~")
 
     @commands.command(name='emojis', aliases=['emoji'])
+    @commands.guild_only()
+    @commands.has_permissions(administrator=True)
     async def emoji(self, ctx, *args):
         name = args[0]
         emoji = args[1]
